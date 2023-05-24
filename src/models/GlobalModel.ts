@@ -9,7 +9,8 @@ import { LingKuang } from "./Buildings/LingKuang";
 import { YaoYuan } from "./Buildings/YaoYuan";
 import { findMedicineForLevel } from "./Constants/ItemMap";
 import { Disciple } from "./Disciple";
-import { Item } from "./Item";
+import { BagItem } from "./Items/BagItem";
+import { Item } from "./Items/Item";
 import { LingGen } from "./LingGen";
 import { SectInfo } from "./SectInfo";
 import { SystemEngine } from "./SystemEngine";
@@ -56,7 +57,7 @@ export class GlobalModel {
         const model = new GlobalModel({
             zhangMengKey: disciple.key,
             sect: new SectInfo({
-                items: [new Item({ id: 1, count: 100000 }), new Item({ id: 2, count: 10 })],
+                items: [new BagItem({item: new Item({id: 1}),count: 10000})],
                 discipleList: [disciple]
             })
         });
@@ -64,7 +65,7 @@ export class GlobalModel {
     }
 
     addNewDisciple() {
-        if (this.LingShi.remove(100000)) {
+        if (this.sect.LingShi.remove(100000)) {
             const disciple = GlobalModel.generateDisciple();
             this.sect.discipleList.push(disciple);
             SystemEngine.log(`${disciple.LevelName} - ${disciple.name} 加入了本门`);
@@ -92,26 +93,6 @@ export class GlobalModel {
         })
     }
 
-    addItem(item: Item) {
-        const model = this.sect.items.find(x => x.id === item.id);
-        if (!model) {
-            this.sect.items.push(item);
-        } else {
-            model.count += item.count;
-        }
-    }
-
-    removeItem(item: Item): boolean {
-        const model = this.sect.items.find(x => x.id === item.id);
-        if (!model)
-            return false;
-        if (model.count < item.count)
-            return false;
-
-        model.count -= item.count;
-        return true;
-    }
-
 
     store() {
         const m = JSON.stringify(this)
@@ -129,9 +110,8 @@ export class GlobalModel {
     }
 
     revive(disciple: Disciple) {
-        const medicine = this.sect.items.find(x => x.id === findMedicineForLevel(disciple.level));
-        if (medicine && medicine.count >= 1) {
-            medicine.count--;
+        const medicine = this.sect.items.find(x => x.item.id === findMedicineForLevel(disciple.level));
+        if (medicine?.remove(1)) {
             disciple.revive();
         } else {
             SystemEngine.log(`没有足够的 ${disciple.ReviveMedicine}`);
@@ -146,15 +126,6 @@ export class GlobalModel {
 
     get ZhangMeng(): Disciple {
         return this.sect.discipleList.find(x => x.key === this.zhangMengKey)!
-    }
-
-    get LingShi(): Item {
-        let lingShi = this.sect.items.find(x => x.id === 1);
-        if (!lingShi) {
-            lingShi = new Item({ id: 1, count: 0 });
-            this.sect.items.push(lingShi);
-        }
-        return lingShi;
     }
 
     get IncomeOfLingShi(): number {
