@@ -1,5 +1,5 @@
 # Compile JS Files
-FROM node:14 AS webpack
+FROM node AS webpack
 COPY . .
 RUN npm install && npm run build
 

@@ -92,7 +92,7 @@ const showAlchemyModal = () => {
             <Panel
               v-for="p in pageModel.sect.discipleList"
               :key="p.key"
-              style="width: calc(33.33% - 2px); float: left; height: 400px"
+              style="width: calc(33.33% - 2px); float: left; height: 440px"
             >
               <template #title
                 >{{ p.name
@@ -153,7 +153,7 @@ const showAlchemyModal = () => {
                     >突破</a
                   >
                   <a
-                    v-if="pageModel.sect.hasItem(p.TuPoPotion.id)"
+                    v-if="p.CanLevelUp && pageModel.sect.hasItem(p.TuPoPotion.id)"
                     @click="
                       p.useMedicine(pageModel.sect.findItem(p.TuPoPotion.id)!)
                     "

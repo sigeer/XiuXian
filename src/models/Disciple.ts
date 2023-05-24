@@ -5,7 +5,6 @@ import { Build } from "./Buildings/Build";
 import { LianGongFang } from "./Buildings/LianGongFang";
 import { findMedicineForLevel, getExpDrugForLevel, getTuPoDrugForLevel, ItemMap, ItemType } from "./Constants/ItemMap";
 import { IBuild } from "./IBuild";
-import { IItem } from "./Items/IItem";
 import { ILevel } from "./Interfaces/ILevel";
 import { ITalent } from "./ITalent";
 import { Item } from "./Items/Item";
@@ -16,6 +15,8 @@ import { isPoJing, LevelName } from "./Settings/LevelSettings";
 import { XinFaBase } from "./Settings/XinFaBase";
 import { SystemEngine } from "./SystemEngine";
 import { BagItem } from "./Items/BagItem";
+import { IBuff } from "./IBuff";
+import { BuffItem } from "./Constants/BuffMap";
 
 export class Disciple extends Person implements ILevel {
     level: number;
@@ -36,6 +37,7 @@ export class Disciple extends Person implements ILevel {
 
     buffList: Buff[] = [];
     garrisonBuilding: IBuild | null;
+    poJingFailedCount: number = 0;
 
     constructor(json: any) {
         json = json ?? {};
@@ -82,6 +84,10 @@ export class Disciple extends Person implements ILevel {
                 } else {
                     this.tuPoFailed();
                 }
+                this.poJingFailedCount++;
+                if (this.poJingFailedCount === 3) {
+                    this.buffList.push(Buff.DaoXinPoSui());
+                }
             } else {
                 if (ifSuccess(10)) {
                     this.fiasco();
@@ -93,6 +99,7 @@ export class Disciple extends Person implements ILevel {
             return false
         }
         this.tuPo();
+        this.poJingFailedCount = 0;
         SystemEngine.log(`突破成功, ${this.name}突破到${this.LevelName}`);
         return true
     }
@@ -202,6 +209,14 @@ export class Disciple extends Person implements ILevel {
         }
     }
 
+    hasBuff(buff: IBuff) {
+        return this.buffList.some(x => x.id === buff.id);
+    }
+
+    hasBuffById(id: number) {
+        return this.buffList.some(x => x.id === id);
+    }
+
     get TalentLevel(): string {
         if (this.TalentTotal < 320)
             return "不足"
@@ -276,7 +291,7 @@ export class Disciple extends Person implements ILevel {
     getIncomeExpByLianGongFang(lianGongFang: LianGongFang): number {
         if (this.IsWeakness || this.Soul || this.level > 31)
             return 0;
-        let baseIncome = +((1 + (+(this.gengGu.quality / 100).toFixed(4))) * lianGongFang.ValueOfProduction * this.level / 31).toFixed(0);
+        let baseIncome = +((1 + (+(this.gengGu.quality / 100).toFixed(4))) * lianGongFang.ValueOfProduction * this.level * (this.hasBuffById(BuffItem.道心破碎) ? 0.1 : 1) / 31).toFixed(0);
         return baseIncome;
     }
 
@@ -284,7 +299,7 @@ export class Disciple extends Person implements ILevel {
         if (this.IsWeakness || this.Soul || !this.IsBiGuang || this.level > 31)
             return 0;
 
-        return +((1 + (+(this.gengGu.quality / 100).toFixed(4))) * biGuanShi.ValueOfProduction * this.level / 31).toFixed(0);
+        return +((1 + (+(this.gengGu.quality / 100).toFixed(4))) * biGuanShi.ValueOfProduction * this.level* (this.hasBuffById(BuffItem.道心破碎) ? 0.1 : 1) / 31).toFixed(0);
     }
 
     getIncomeExpTotal(lianGongFang: LianGongFang, biGuanShi: BiGuanShi): number {
@@ -296,10 +311,10 @@ export class Disciple extends Person implements ILevel {
             this.dyingBefore = null;
             this.fiasco();
         }
-        if (item.item.Type === ItemType.ExpDrug && item.remove(1)) {
+        if (item.item.Type === ItemType.ExpDrug && !this.CanLevelUp && item.remove(1)) {
             this.exp += 10000;
         }
-        if (item.item.Type === ItemType.TuPoDrug && item.remove(1)) {
+        if (item.item.Type === ItemType.TuPoDrug && this.CanLevelUp && item.remove(1)) {
             this.tuPoSuccessRate += 5;
             this.levelUp();
         }

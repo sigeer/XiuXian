@@ -1,4 +1,4 @@
-import { BuffMap } from "./Constants/BuffMap";
+import { BuffItem, BuffMap } from "./Constants/BuffMap";
 import { IBuff } from "./IBuff";
 
 export class Buff implements IBuff {
@@ -15,6 +15,11 @@ export class Buff implements IBuff {
     static BiGuang() : Buff{
         return new Buff({id: 3, duration: -1});
     }
+
+    static DaoXinPoSui() : Buff{
+        return new Buff({id: BuffItem.道心破碎, duration: -1});
+    }
+
 
     get Name() : string {
         return BuffMap[this.id];
