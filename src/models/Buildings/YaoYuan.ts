@@ -1,7 +1,8 @@
-import { getArraryFromRandom, getRandom } from "../../utils/utils";
+import { generateRandomArrayWithSum, getRandom } from "../../utils/utils";
 import { Disciple } from "../Disciple";
 import { IShouHuo } from "../IShouHuo";
-import { Item } from "../Item";
+import { BagItem } from "../Items/BagItem";
+import { Item } from "../Items/Item";
 import { SystemParameters } from "../Settings/SystemParameters";
 import { SystemEngine } from "../SystemEngine";
 import { BuildingBase } from "./BuildingBase";
@@ -26,13 +27,12 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
         if (this.consume()) {
             if (this.flag === 0) {
                 const allResult = this.getYaoCaiLevelByLevel();
-                const productionArray = getArraryFromRandom(this.ValueOfProduction, allResult.length);
-                const items = allResult.map((x, index) => new Item({ id: x, count: productionArray[index] }))
+                const productionArray = generateRandomArrayWithSum(this.ValueOfProduction, allResult.length);
+                const items = allResult.map((x, index) => new BagItem({item: new Item({id: x}), count:productionArray[index]}))
                 items.forEach(item => {
                     this.sect!.addItem(item);
-
                 })
-                const display = items.reduce((a, b) => `${a} ${b.Name} ${b.count}个,`, "");
+                const display = items.reduce((a, b) => `${a} ${b.item.Name} ${b.count}个,`, "");
                 SystemEngine.log(`${this.name} 产出了 ${display}`);
                 this.flag = SystemParameters.MedicinalMaterialsCycle;
             }

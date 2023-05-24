@@ -47,16 +47,57 @@ export function findMedicineForLevel(level: number) {
     return 15;
 }
 
+export enum ItemType {
+    Exp = 1,
+    LingShi = 2,
+    Herbs = 3,
+    ExpDrug = 4,
+    TuPoDrug = 5,
+    ReviveDrug = 6
+}
+
 export function getItemTypeById(id: number) {
     if (id >= 9 && id <= 15)
-        return 3;
+        return ItemType.ReviveDrug;
     if (id >= 16 && id <= 22)
-        return 4;
+        return ItemType.ExpDrug;
     if (id >= 23 && id <= 29)
-        return 5;
-    return 2;
+        return ItemType.TuPoDrug;
+    return ItemType.LingShi;
 }
 
 export function getCost(id: number) {
     return (id - 7) % 7;
+}
+
+export function getTuPoDrugForLevel(level: number) {
+    if (level <= 12)
+        return 23;
+    if (level <= 15)
+        return 24;
+    if (level <= 18)
+        return 25;
+    if (level <= 21)
+        return 26;
+    if (level <= 24)
+        return 27;
+    if (level <= 30)
+        return 28;
+    return 29;
+}
+
+export function getExpDrugForLevel(level: number) {
+    if (level <= 12)
+        return 16;
+    if (level <= 15)
+        return 17;
+    if (level <= 18)
+        return 18;
+    if (level <= 21)
+        return 19;
+    if (level <= 24)
+        return 20;
+    if (level <= 30)
+        return 21;
+    return 22;
 }

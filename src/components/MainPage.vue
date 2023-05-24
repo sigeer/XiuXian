@@ -56,9 +56,9 @@ const showAlchemyModal = () => {
       <Panel>
         <template #title>物品</template>
         <template #body>
-          <div v-for="x in pageModel.sect.items" :key="x.id">
-            {{ x.Name }}: {{ x.count
-            }}<span v-if="x.id === 1">
+          <div v-for="x in pageModel.sect.items" :key="x.item.id">
+            {{ x.item.Name }}: {{ x.count
+            }}<span v-if="x.item.id === 1">
               <el-tooltip class="box-item" effect="dark" placement="top">
                 <template #content>
                   <p>灵矿产出：{{ pageModel.lingKuang.ValueOfProduction }}</p>
@@ -71,8 +71,8 @@ const showAlchemyModal = () => {
                   <p>药园消耗：{{ pageModel.yaoYuan.ValueOfConsumption }}</p>
                 </template>
                 <span>
-                  （<span v-if="pageModel.IncomeOfLingShi > 0">+</span
-                > {{ pageModel.IncomeOfLingShi }}）
+                  （<span v-if="pageModel.IncomeOfLingShi > 0">+</span>
+                  {{ pageModel.IncomeOfLingShi }}）
                 </span>
               </el-tooltip></span
             >
@@ -112,29 +112,52 @@ const showAlchemyModal = () => {
                 <div>境界: {{ p.LevelName }}</div>
                 <div>战斗力: {{ p.getScore() }}</div>
                 <div>
-                  修为: {{ p.exp.count }} / {{ p.getLevelUpCost() }} 
+                  <a
+                    v-if="pageModel.sect.hasItem(p.ExpPotion.id)"
+                    @click="
+                      p.useMedicine(pageModel.sect.findItem(p.ExpPotion.id)!)
+                    "
+                  >
+                    修为: {{ p.exp }} / {{ p.getLevelUpCost() }}
+                  </a>
+                  <template v-else>
+                    修为: {{ p.exp }} / {{ p.getLevelUpCost() }}
+                  </template>
                   <el-tooltip class="box-item" effect="dark" placement="top">
-                <template #content>
-                  <p>练功房：{{ p.getIncomeExpByLianGongFang(pageModel.lianGongFang) }}</p>
-                  <p v-if="p.IsBiGuang">
-                    闭关室：{{ p.getIncomeExpByBiGuan(pageModel.biGuanShi) }}
-                  </p>
-                </template>
-                <span>
-                  （+{{
-                    p.getIncomeExpTotal(
-                      pageModel.lianGongFang,
-                      pageModel.biGuanShi
-                    )
-                  }}）
-                </span>
-              </el-tooltip>
-                  
+                    <template #content>
+                      <p>
+                        练功房：{{
+                          p.getIncomeExpByLianGongFang(pageModel.lianGongFang)
+                        }}
+                      </p>
+                      <p v-if="p.IsBiGuang">
+                        闭关室：{{
+                          p.getIncomeExpByBiGuan(pageModel.biGuanShi)
+                        }}
+                      </p>
+                    </template>
+                    <span>
+                      （+{{
+                        p.getIncomeExpTotal(
+                          pageModel.lianGongFang,
+                          pageModel.biGuanShi
+                        )
+                      }}）
+                    </span>
+                  </el-tooltip>
+
                   <a
                     class="btn-control"
                     v-if="p.CanLevelUp"
                     @click="p.levelUp()"
                     >突破</a
+                  >
+                  <a
+                    v-if="pageModel.sect.hasItem(p.TuPoPotion.id)"
+                    @click="
+                      p.useMedicine(pageModel.sect.findItem(p.TuPoPotion.id)!)
+                    "
+                    >使用{{ p.TuPoPotion.Name }}进行突破</a
                   >
                 </div>
                 <div>突破成功率: {{ p.TuPoSuccessRate }}%</div>
@@ -168,7 +191,10 @@ const showAlchemyModal = () => {
           <div>
             <a @click="setBuildignGarrsion(pageModel.cangJingGe)">{{
               pageModel.cangJingGe.name
-            }}</a> <a @click="pageModel.cangJingGe.toggle()">{{ pageModel.cangJingGe.isOpened ? '关闭' : '开启' }}</a>
+            }}</a>
+            <a @click="pageModel.cangJingGe.toggle()">{{
+              pageModel.cangJingGe.isOpened ? "关闭" : "开启"
+            }}</a>
             <div>
               等级{{ pageModel.cangJingGe.level }}
               <a class="btn-control" @click="pageModel.cangJingGe.levelUp()"
@@ -180,7 +206,10 @@ const showAlchemyModal = () => {
           <div>
             <a @click="setBuildignGarrsion(pageModel.lingKuang)">
               {{ pageModel.lingKuang.name }}</a
-            > <a @click="pageModel.lingKuang.toggle()">{{ pageModel.lingKuang.isOpened ? '关闭' : '开启' }}</a>
+            >
+            <a @click="pageModel.lingKuang.toggle()">{{
+              pageModel.lingKuang.isOpened ? "关闭" : "开启"
+            }}</a>
             <div>
               等级{{ pageModel.lingKuang.level }}
               <a class="btn-control" @click="pageModel.lingKuang.levelUp()"
@@ -193,7 +222,10 @@ const showAlchemyModal = () => {
           <div>
             <a @click="setBuildignGarrsion(pageModel.yaoYuan)">{{
               pageModel.yaoYuan.name
-            }}</a> <a @click="pageModel.yaoYuan.toggle()">{{ pageModel.yaoYuan.isOpened ? '关闭' : '开启' }}</a>
+            }}</a>
+            <a @click="pageModel.yaoYuan.toggle()">{{
+              pageModel.yaoYuan.isOpened ? "关闭" : "开启"
+            }}</a>
             <div>
               等级{{ pageModel.yaoYuan.level }}
               <a class="btn-control" @click="pageModel.yaoYuan.levelUp()"
@@ -215,7 +247,10 @@ const showAlchemyModal = () => {
           <div>
             <a @click="setBuildignGarrsion(pageModel.biGuanShi)">{{
               pageModel.biGuanShi.name
-            }}</a> <a @click="pageModel.biGuanShi.toggle()">{{ pageModel.biGuanShi.isOpened ? '关闭' : '开启' }}</a>
+            }}</a>
+            <a @click="pageModel.biGuanShi.toggle()">{{
+              pageModel.biGuanShi.isOpened ? "关闭" : "开启"
+            }}</a>
             <div>
               等级{{ pageModel.biGuanShi.level }}
               <a class="btn-control" @click="pageModel.biGuanShi.levelUp()"
@@ -226,7 +261,9 @@ const showAlchemyModal = () => {
           <hr />
           <div>
             {{ pageModel.lianGongFang.name }}
-            <a @click="pageModel.lianGongFang.toggle()">{{ pageModel.lianGongFang.isOpened ? '关闭' : '开启' }}</a>
+            <a @click="pageModel.lianGongFang.toggle()">{{
+              pageModel.lianGongFang.isOpened ? "关闭" : "开启"
+            }}</a>
             <div>
               等级{{ pageModel.lianGongFang.level }}
               <a class="btn-control" @click="pageModel.lianGongFang.levelUp()"
@@ -261,6 +298,7 @@ const showAlchemyModal = () => {
 <style scoped>
 a {
   cursor: pointer;
+  margin: 0px 6px;
 }
 
 .btn-control {

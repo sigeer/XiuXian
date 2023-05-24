@@ -179,10 +179,34 @@ export function getArraryFromRandom( root: number, length: number = 8): number[]
   let leftRoot = root;
   let list: number[] = [];
   for (let index = 0; index < length; index++) {
-    let value = getRandom(Math.min(leftRoot, leftRoot / length / length), leftRoot);
+    let value = getRandom(Math.min(leftRoot, leftRoot / length / length));
     value = Math.min(value, leftRoot);
     list.push(index === length - 1 ? leftRoot : value);
     leftRoot = leftRoot - value;
   }
   return list;
 }
+
+export function generateRandomArrayWithSum(sum: number, length: number, max: number = 100): number[] {
+  // 生成随机数数组
+  const array: number[] = [];
+  let currentSum = 0;
+  for (let i = 0; i < length - 1; i++) {
+    const randomNum = Math.random();
+    const remainingSum = sum - currentSum;
+    const maxAllowed = Math.min(remainingSum, max);
+    const num = Math.round(maxAllowed * randomNum);
+    array.push(num);
+    currentSum += num;
+  }
+  array.push(sum - currentSum);
+
+  // 随机打乱数组顺序
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  return array;
+}
+
