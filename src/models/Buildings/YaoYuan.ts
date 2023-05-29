@@ -2,7 +2,6 @@ import { generateRandomArrayWithSum, getRandom } from "../../utils/utils";
 import { Disciple } from "../Disciple";
 import { IShouHuo } from "../IShouHuo";
 import { BagItem } from "../Items/BagItem";
-import { Item } from "../Items/Item";
 import { SystemParameters } from "../Settings/SystemParameters";
 import { SystemEngine } from "../SystemEngine";
 import { BuildingBase } from "./BuildingBase";
@@ -28,11 +27,11 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
             if (this.flag === 0) {
                 const allResult = this.getYaoCaiLevelByLevel();
                 const productionArray = generateRandomArrayWithSum(this.ValueOfProduction, allResult.length);
-                const items = allResult.map((x, index) => new BagItem({item: new Item({id: x}), count:productionArray[index]}))
+                const items = allResult.map((x, index) => new BagItem({itemId : x, count:productionArray[index]}))
                 items.forEach(item => {
                     this.sect!.addItem(item);
                 })
-                const display = items.reduce((a, b) => `${a} ${b.item.Name} ${b.count}个,`, "");
+                const display = items.reduce((a, b) => `${a} ${b.Item.Name} ${b.count}个,`, "");
                 SystemEngine.log(`${this.name} 产出了 ${display}`);
                 this.flag = SystemParameters.MedicinalMaterialsCycle;
             }

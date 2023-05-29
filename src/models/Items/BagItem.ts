@@ -1,13 +1,12 @@
 import { SystemEngine } from "../SystemEngine";
-import { IItem } from "./IItem";
 import { Item } from "./Item";
 
 export class BagItem {
-    item: IItem;
     count: number;
+    itemId: number;
 
-    constructor(json: { item: IItem, count: number}){
-        this.item = new Item(json.item);
+    constructor(json: { itemId: number, count: number}){
+        this.itemId = json.itemId;
         this.count = json.count;
     }
 
@@ -18,11 +17,15 @@ export class BagItem {
     remove(count: number): boolean {
         if (this.count >= count) {
             this.count = +(this.count - count).toFixed(0);
-            this.item.id !== 1 && SystemEngine.log(`消耗${this.item.Name} ${count}个`);
+            this.itemId !== 1 && SystemEngine.log(`消耗${this.Item.Name} ${count}个`);
             return true;
         } else {
-            SystemEngine.log(this.item.Name + "不足");
+            SystemEngine.log(this.Item.Name + "不足");
         }
         return false;
+    }
+
+    get Item(): Item {
+        return new Item({id: this.itemId});
     }
 }

@@ -3,30 +3,40 @@ import { IBuff } from "./IBuff";
 
 export class Buff implements IBuff {
     id: number;
-    duration: number;
+    expired: Date | null;
 
-    constructor (json: any) {
+    constructor(json: any) {
         json = json ?? {};
 
         this.id = json.id;
-        this.duration = json.duration;
+        this.expired = json.expired ? new Date(json.expired) : null;
     }
 
-    static BiGuang() : Buff{
-        return new Buff({id: 3, duration: -1});
+    static BiGuang(): Buff {
+        return new Buff({ id: 3, duration: -1 });
     }
 
-    static DaoXinPoSui() : Buff{
-        return new Buff({id: BuffItem.道心破碎, duration: -1});
+    static DaoXinPoSui(): Buff {
+        return new Buff({ id: BuffItem.道心破碎, expired: new Date(new Date().getTime() + 10 * 60 * 1000) });
     }
 
 
-    get Name() : string {
+    get Name(): string {
         return BuffMap[this.id];
     }
 
-    get Description(): string{
+    get Description(): string {
         return `${this.Name}: xxxx`;
+    }
+
+    extend(unit: number): void {
+        if (this.expired === null)
+            return;
+        this.expired = new Date(this.expired.getTime() + unit * 1000);
+    }
+
+    setExpired(expired: Date | null): void {
+        this.expired = expired;
     }
 
 }

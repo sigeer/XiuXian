@@ -59,7 +59,7 @@ export class Disciple extends Person implements ILevel {
 
         this.weaknessBefore = json.weaknessBefore ? new Date(json.weaknessBefore) : null;
         this.dyingBefore = json.dyingBefore ? new Date(json.dyingBefore) : null;
-        this.buffList = json.buffList ?? [];
+        this.buffList = json.buffList.map((x: any) => new Buff(x)) ?? [];
         this.garrisonBuilding = json.garrisonBuilding ? new Build(json.garrisonBuilding) : null;
     }
 
@@ -85,8 +85,8 @@ export class Disciple extends Person implements ILevel {
                     this.tuPoFailed();
                 }
                 this.poJingFailedCount++;
-                if (this.poJingFailedCount === 3) {
-                    this.buffList.push(Buff.DaoXinPoSui());
+                if (this.poJingFailedCount === 5) {
+                    this.addBuff(Buff.DaoXinPoSui());
                 }
             } else {
                 if (ifSuccess(10)) {
@@ -129,8 +129,12 @@ export class Disciple extends Person implements ILevel {
         if (this.exp >= maxExp) {
             if (SystemEngine.autoTuPo)
                 this.levelUp();
-            else if (!isPoJing(this.level))
-                this.tuPoSuccessRate = this.tuPoSuccessRate + +(this.TuPoSuccessRate < 100 ? 0.02 : 0).toFixed(2)
+            else {
+                let improve = 0.03;
+                if (isPoJing(this.level))
+                    improve = 0.01;
+                this.tuPoSuccessRate = this.tuPoSuccessRate + +(this.TuPoSuccessRate < 100 ? improve : 0).toFixed(2)
+            }
         }
     }
 
@@ -144,6 +148,10 @@ export class Disciple extends Person implements ILevel {
 
 
     tuPo() {
+        if (this.IsWeakness) {
+            // 虚弱期 不能突破
+            return;
+        }
         this.level++;
         this.tuPoSuccessRate = 0;
         this.exp = 0;
@@ -210,11 +218,18 @@ export class Disciple extends Person implements ILevel {
     }
 
     hasBuff(buff: IBuff) {
-        return this.buffList.some(x => x.id === buff.id);
+        return this.hasBuffById(buff.id);
     }
 
     hasBuffById(id: number) {
-        return this.buffList.some(x => x.id === id);
+        const buffData = this.buffList.find(x => x.id === id);
+        if (buffData && (buffData.expired === null || buffData.expired >= new Date())) {
+            return true;
+        }
+        if (buffData && buffData.expired! < new Date()) {
+            this.removeBuffById(id);
+        }
+        return false;
     }
 
     get TalentLevel(): string {
@@ -235,7 +250,7 @@ export class Disciple extends Person implements ILevel {
     }
 
     get CanLevelUp() {
-        return this.level < 31 && (this.exp >= this.getLevelUpCost())
+        return !this.IsWeakness && this.level < 31 && (this.exp >= this.getLevelUpCost())
     }
 
     get TuPoSuccessRate() {
@@ -274,18 +289,26 @@ export class Disciple extends Person implements ILevel {
         return this.garrisonBuilding?.name === '闭关室';
     }
 
+    get BuffDisplay(): string {
+        return this.buffList.reduce((a, b) => a + b.Name + ', ', "");
+    }
+
     addBuff(buff: Buff) {
         const existedBuff = this.buffList.find(x => x.id === buff.id);
         if (existedBuff) {
-            existedBuff.duration = buff.duration;
+            existedBuff.setExpired(buff.expired)
 
         } else {
             this.buffList.push(buff);
         }
     }
 
+    removeBuffById(buffId: number) {
+        this.buffList = this.buffList.filter(x => x.id !== buffId);
+    }
+
     removeBuff(buff: Buff) {
-        this.buffList = this.buffList.filter(x => x.id !== buff.id);
+        this.removeBuffById(buff.id);
     }
 
     getIncomeExpByLianGongFang(lianGongFang: LianGongFang): number {
@@ -299,7 +322,7 @@ export class Disciple extends Person implements ILevel {
         if (this.IsWeakness || this.Soul || !this.IsBiGuang || this.level > 31)
             return 0;
 
-        return +((1 + (+(this.gengGu.quality / 100).toFixed(4))) * biGuanShi.ValueOfProduction * this.level* (this.hasBuffById(BuffItem.道心破碎) ? 0.1 : 1) / 31).toFixed(0);
+        return +((1 + (+(this.gengGu.quality / 100).toFixed(4))) * biGuanShi.ValueOfProduction * this.level * (this.hasBuffById(BuffItem.道心破碎) ? 0.1 : 1) / 31).toFixed(0);
     }
 
     getIncomeExpTotal(lianGongFang: LianGongFang, biGuanShi: BiGuanShi): number {
@@ -307,24 +330,24 @@ export class Disciple extends Person implements ILevel {
     }
 
     useMedicine(item: BagItem) {
-        if (this.Soul && item.item.Type === ItemType.ReviveDrug && item.remove(1)) {
+        if (this.Soul && item.Item.Type === ItemType.ReviveDrug && item.remove(1)) {
             this.dyingBefore = null;
             this.fiasco();
         }
-        if (item.item.Type === ItemType.ExpDrug && !this.CanLevelUp && item.remove(1)) {
+        if (item.Item.Type === ItemType.ExpDrug && !this.IsWeakness && !this.Soul && !this.Died && !this.CanLevelUp && item.remove(1)) {
             this.exp += 10000;
         }
-        if (item.item.Type === ItemType.TuPoDrug && this.CanLevelUp && item.remove(1)) {
+        if (item.Item.Type === ItemType.TuPoDrug && !this.IsWeakness && !this.Soul && !this.Died && this.CanLevelUp && item.remove(1)) {
             this.tuPoSuccessRate += 5;
             this.levelUp();
         }
     }
 
     get ExpPotion(): Item {
-        return new Item({id: getExpDrugForLevel(this.level)});
+        return new Item({ id: getExpDrugForLevel(this.level) });
     }
 
     get TuPoPotion(): Item {
-        return new Item({id: getTuPoDrugForLevel(this.level)});
+        return new Item({ id: getTuPoDrugForLevel(this.level) });
     }
 }
