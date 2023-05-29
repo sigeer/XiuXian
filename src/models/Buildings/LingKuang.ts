@@ -14,7 +14,7 @@ export class LingKuang extends BuildingBase implements IShouHuo, IGarrison {
     get BaseValueOfProduction(): number {
         if (this.Disabled)
             return 0;
-        return this.level * (this.level + 1) * 255;
+        return this.level * (this.level + 1) * 299;
     }
     get ValueOfProduction(): number {
         if (this.Disabled)
