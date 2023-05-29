@@ -10,7 +10,6 @@ import { YaoYuan } from "./Buildings/YaoYuan";
 import { findMedicineForLevel } from "./Constants/ItemMap";
 import { Disciple } from "./Disciple";
 import { BagItem } from "./Items/BagItem";
-import { Item } from "./Items/Item";
 import { LingGen } from "./LingGen";
 import { SectInfo } from "./SectInfo";
 import { SystemEngine } from "./SystemEngine";
@@ -57,7 +56,7 @@ export class GlobalModel {
         const model = new GlobalModel({
             zhangMengKey: disciple.key,
             sect: new SectInfo({
-                items: [new BagItem({item: new Item({id: 1}),count: 10000})],
+                items: [new BagItem({ itemId: 1, count: 10000 })],
                 discipleList: [disciple]
             })
         });
@@ -110,7 +109,7 @@ export class GlobalModel {
     }
 
     revive(disciple: Disciple) {
-        const medicine = this.sect.items.find(x => x.item.id === findMedicineForLevel(disciple.level));
+        const medicine = this.sect.items.find(x => x.itemId === findMedicineForLevel(disciple.level));
         if (medicine?.remove(1)) {
             disciple.revive();
         } else {

@@ -56,9 +56,9 @@ const showAlchemyModal = () => {
       <Panel>
         <template #title>物品</template>
         <template #body>
-          <div v-for="x in pageModel.sect.items" :key="x.item.id">
-            {{ x.item.Name }}: {{ x.count
-            }}<span v-if="x.item.id === 1">
+          <div v-for="x in pageModel.sect.items" :key="x.itemId">
+            {{ x.Item.Name }}: {{ x.count
+            }}<span v-if="x.itemId === 1">
               <el-tooltip class="box-item" effect="dark" placement="top">
                 <template #content>
                   <p>灵矿产出：{{ pageModel.lingKuang.ValueOfProduction }}</p>
@@ -108,6 +108,7 @@ const showAlchemyModal = () => {
                   <a v-if="p.Soul" @click="pageModel.revive(p)"
                     >使用{{ p.ReviveMedicine }}</a
                   >
+                  <span>{{ p.BuffDisplay }}</span>
                 </div>
                 <div>境界: {{ p.LevelName }}</div>
                 <div>战斗力: {{ p.getScore() }}</div>

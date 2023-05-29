@@ -28,7 +28,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
 import { ItemMap, getCost } from "../models/Constants/ItemMap";
-import { Item } from "../models/Items/Item";
 import { SectInfo } from "../models/SectInfo";
 
 let bag: SectInfo;
@@ -43,8 +42,7 @@ const hide = () => {
 
 const drug = ref(0);
 const drugListItem: number[] = [
-  16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29,
+  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
 ];
 const drugList = reactive([
   ...drugListItem.map((x: number) => ({ id: x, name: ItemMap[x] })),
@@ -52,7 +50,7 @@ const drugList = reactive([
 
 const count = ref(0);
 const maxCount = computed(() => {
-  return (bag.items.find((x) => x.item.id === drug.value)?.count ?? 0) / 50;
+  return (bag.findItem(drug.value)?.count ?? 0) / 50;
 });
 const costId = computed(() => {
   return getCost(drug.value);
@@ -63,8 +61,8 @@ const costName = computed(() => {
 
 const submitEmits = defineEmits(["submit"]);
 const submit = () => {
-  if (bag.removeItem(new Item({ id: costId.value }),  50 * count.value)) {
-    bag.addItemFromItem(new Item({ id: drug.value}), +count.value );
+  if (bag.removeItemFromItemId(costId.value, 50 * count.value)) {
+    bag.addItemFromItemId(drug.value, +count.value);
     submitEmits("submit");
     hide();
   }

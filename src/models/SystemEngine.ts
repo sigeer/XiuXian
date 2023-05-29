@@ -56,10 +56,20 @@ export class SystemEngine {
     }
 
     static load(): GlobalModel | null {
-        const strValue = localStorage.getItem("c_a");
-        if (strValue)
-            return new GlobalModel(JSON.parse(strValue));
-        return null;
+        try {
+            const strValue = localStorage.getItem("c_a");
+            if (strValue)
+                return new GlobalModel(JSON.parse(strValue));
+            return null;
+        }
+        catch {
+            this.log("存档读取失败.");
+            return null;
+        }
+    }
+
+    static clear() {
+        localStorage.removeItem("c_a");
     }
 
     static generateXinFaList(): void {
