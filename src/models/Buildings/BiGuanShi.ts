@@ -24,6 +24,8 @@ export class BiGuanShi extends BuildingBase implements IShouHuo, IGarrison {
     get BaseValueOfProduction(): number {
         if (this.Disabled)
             return 0;
+        if (this.sect!.LingShi.count < this.ValueOfConsumption)
+            return 0;
         return this.level * 99;
     }
     get ValueOfProduction(): number {
@@ -34,7 +36,7 @@ export class BiGuanShi extends BuildingBase implements IShouHuo, IGarrison {
     get ValueOfConsumption(): number {
         if (this.Disabled)
             return 0;
-        return this.level * (this.level + 1) * 660;
+        return this.level * (this.level + 1) * 880;
     }
 
     consume(): boolean {

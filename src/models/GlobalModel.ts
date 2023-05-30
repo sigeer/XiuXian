@@ -87,6 +87,7 @@ export class GlobalModel {
             wuxing: new LingGen(getRandom()),
             gengGu: new LingGen(getRandom()),
             meiLi: new LingGen(getRandom()),
+            buffList: [],
             xinFa: null,
             exp: null
         })

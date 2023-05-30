@@ -19,7 +19,7 @@ export class BuildingBase extends Build implements IBuild, ILevel {
     }
 
     getLevelUpCost(): number {
-        return this.level * (1 + this.level) * 1000;
+        return this.level * (this.level - 1) * (this.level + 1) * 99;
     }
 
     levelUp(): boolean {
