@@ -27,7 +27,7 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
             if (this.flag === 0) {
                 const allResult = this.getYaoCaiLevelByLevel();
                 const productionArray = generateRandomArrayWithSum(this.ValueOfProduction, allResult.length);
-                const items = allResult.map((x, index) => new BagItem({itemId : x, count:productionArray[index]}))
+                const items = allResult.map((x, index) => new BagItem({ itemId: x, count: productionArray[index] }))
                 items.forEach(item => {
                     this.sect!.addItem(item);
                 })
@@ -65,6 +65,9 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
 
     get BaseValueOfProduction(): number {
         if (this.Disabled)
+            return 0;
+
+        if (this.sect!.LingShi.count < this.ValueOfConsumption)
             return 0;
         return SystemParameters.MedicinalMaterialsBaseProduction + getRandom(0, this.level);
     }

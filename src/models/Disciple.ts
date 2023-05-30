@@ -59,7 +59,7 @@ export class Disciple extends Person implements ILevel {
 
         this.weaknessBefore = json.weaknessBefore ? new Date(json.weaknessBefore) : null;
         this.dyingBefore = json.dyingBefore ? new Date(json.dyingBefore) : null;
-        this.buffList = json.buffList.map((x: any) => new Buff(x)) ?? [];
+        this.buffList = (json.buffList ?? []).map((x: any) => new Buff(x)) ?? [];
         this.garrisonBuilding = json.garrisonBuilding ? new Build(json.garrisonBuilding) : null;
     }
 

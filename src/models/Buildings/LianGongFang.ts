@@ -31,6 +31,8 @@ export class LianGongFang extends BuildingBase implements IShouHuo {
     get BaseValueOfProduction(): number {
         if (this.Disabled)
             return 0;
+        if (this.sect!.LingShi.count < this.ValueOfConsumption)
+            return 0;
         return this.level * 66;
     }
 
