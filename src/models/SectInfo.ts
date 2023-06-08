@@ -1,5 +1,4 @@
 import { Buff } from "./Buff";
-import { BuffItem } from "./Constants/BuffMap";
 import { Disciple } from "./Disciple";
 import { IBuff } from "./IBuff";
 import { IBuffOwner } from "./IBuffOwner";
@@ -81,16 +80,22 @@ export class SectInfo implements IBuffOwner {
         return lingShi;
     }
 
+    get BuffList() : IBuff[] {
+        const buffList = this.buffList.filter(x => !x.HasExpired());
+        this.buffList = buffList;
+        return buffList;
+    }
+
     hasBuff(buff: IBuff) {
         return this.hasBuffById(buff.id);
     }
 
     hasBuffById(id: number) {
         const buffData = this.buffList.find(x => x.id === id);
-        if (buffData && (buffData.expired === null || buffData.expired >= new Date())) {
+        if (buffData && (buffData.expired === null || buffData.expired > 0)) {
             return true;
         }
-        if (buffData && buffData.expired! < new Date()) {
+        if (buffData && buffData.expired! <= 0) {
             this.removeBuffById(id);
         }
         return false;
@@ -99,7 +104,7 @@ export class SectInfo implements IBuffOwner {
     addBuff(buff: IBuff) {
         const existedBuff = this.buffList.find(x => x.id === buff.id);
         if (existedBuff) {
-            existedBuff.setExpired(buff.expired)
+            existedBuff.setDuration(buff.duration)
 
         } else {
             this.buffList.push(buff);

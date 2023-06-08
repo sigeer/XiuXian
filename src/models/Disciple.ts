@@ -1,4 +1,4 @@
-import { formatTime, getArraryFromRandom, getRandom, ifSuccess } from "../utils/utils";
+import { getArraryFromRandom, getRandom, ifSuccess } from "../utils/utils";
 import { Buff } from "./Buff";
 import { BiGuanShi } from "./Buildings/BiGuanShi";
 import { Build } from "./Buildings/Build";
@@ -33,8 +33,8 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
     exp: number;
     tuPoSuccessRate: number;
 
-    weaknessBefore: Date | null;
-    dyingBefore: Date | null;
+    weaknessBefore: number | null;
+    dyingBefore: number | null;
 
     buffList: Buff[] = [];
     garrisonBuilding: IBuild | null;
@@ -58,8 +58,8 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
         this.exp = json.exp ?? 0;
         this.tuPoSuccessRate = json.tuPoSuccessRate ?? 0;
 
-        this.weaknessBefore = json.weaknessBefore ? new Date(json.weaknessBefore) : null;
-        this.dyingBefore = json.dyingBefore ? new Date(json.dyingBefore) : null;
+        this.weaknessBefore = json.weaknessBefore ?? null;
+        this.dyingBefore = json.dyingBefore ?? null;
         this.buffList = (json.buffList ?? []).map((x: any) => new Buff(x)) ?? [];
         this.garrisonBuilding = json.garrisonBuilding ? new Build(json.garrisonBuilding) : null;
     }
@@ -159,15 +159,15 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
     }
 
     setWeakness(minutes: number) {
-        this.weaknessBefore = new Date(new Date().getTime() + minutes * 60 * 1000)
-        SystemEngine.log(`${this.name}进入虚弱期，${formatTime(this.weaknessBefore!)}结束`);
+        this.weaknessBefore = SystemEngine.dateTime.value + minutes;
+        SystemEngine.log(`${this.name}进入虚弱期，${this.weaknessBefore!}结束`);
     }
 
     die() {
-        this.dyingBefore = new Date(new Date().getTime() + 360 * 60 * 1000)
+        this.dyingBefore = SystemEngine.dateTime.value + 360 * 5;
         this.exp = 0;
         this.tuPoSuccessRate = 0;
-        SystemEngine.log(`${this.name}死亡，灵魂将在${formatTime(this.dyingBefore!)}时消散`);
+        SystemEngine.log(`${this.name}死亡，灵魂将在${this.dyingBefore!}时消散`);
     }
 
     tuPoFailed() {
@@ -224,10 +224,10 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
 
     hasBuffById(id: number) {
         const buffData = this.buffList.find(x => x.id === id);
-        if (buffData && (buffData.expired === null || buffData.expired >= new Date())) {
+        if (buffData && (buffData.expired === null || buffData.expired > 0)) {
             return true;
         }
-        if (buffData && buffData.expired! < new Date()) {
+        if (buffData && buffData.expired! <= 0) {
             this.removeBuffById(id);
         }
         return false;
@@ -267,15 +267,15 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
     }
 
     get IsWeakness(): boolean {
-        return this.weaknessBefore !== null && new Date() <= this.weaknessBefore
+        return this.weaknessBefore !== null && SystemEngine.dateTime.value < this.weaknessBefore
     }
 
     get Soul(): boolean {
-        return this.dyingBefore !== null && new Date() <= this.dyingBefore
+        return this.dyingBefore !== null && SystemEngine.dateTime.value < this.dyingBefore
     }
 
     get Died(): boolean {
-        return this.dyingBefore !== null && new Date() > this.dyingBefore
+        return this.dyingBefore !== null && SystemEngine.dateTime.value >= this.dyingBefore
     }
 
     get ReviveMedicine(): string {
@@ -297,7 +297,7 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
     addBuff(buff: Buff) {
         const existedBuff = this.buffList.find(x => x.id === buff.id);
         if (existedBuff) {
-            existedBuff.setExpired(buff.expired)
+            existedBuff.setDuration(buff.duration)
 
         } else {
             this.buffList.push(buff);

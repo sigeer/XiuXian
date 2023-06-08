@@ -1,23 +1,29 @@
 import { BuffItem, BuffMap } from "./Constants/BuffMap";
 import { IBuff } from "./IBuff";
+import { SystemEngine } from "./SystemEngine";
 
 export class Buff implements IBuff {
     id: number;
-    expired: Date | null;
+    duration: number | null;
+    expired: number|null;
 
     constructor(json: any) {
         json = json ?? {};
 
         this.id = json.id ?? 0;
-        this.expired = json.expired ? new Date(json.expired) : null;
+        this.duration = json.duration ?? null;
+        this.expired =  this.duration === null ? null : (this.duration + SystemEngine.dateTime.value);
+    }
+    HasExpired(): boolean {
+        return this.expired === null || this.expired < SystemEngine.dateTime.value
     }
 
     static BiGuang(): Buff {
-        return new Buff({ id: 3, duration: -1 });
+        return new Buff({ id: BuffItem.闭关 });
     }
 
     static DaoXinPoSui(): Buff {
-        return new Buff({ id: BuffItem.道心破碎, expired: new Date(new Date().getTime() + 10 * 60 * 1000) });
+        return new Buff({ id: BuffItem.道心破碎, duration: 10 });
     }
 
     static Empty(): Buff {
@@ -32,15 +38,15 @@ export class Buff implements IBuff {
     get Description(): string {
         return `${this.Name}: xxxx`;
     }
-
+    
     extend(unit: number): void {
-        if (this.expired === null)
+        if (this.duration === null)
             return;
-        this.expired = new Date(this.expired.getTime() + unit * 1000);
+        this.duration += unit;
     }
 
-    setExpired(expired: Date | null): void {
-        this.expired = expired;
+    setDuration(expired: number | null): void {
+        this.duration = expired;
     }
 
 }

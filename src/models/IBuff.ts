@@ -1,8 +1,11 @@
 export interface IBuff {
     id: number;
-    expired: Date | null;
+    duration: number | null;
+    expired: number|null;
 
     extend(unit: number): void;
-    setExpired(expired: Date | null): void;
+    setDuration(expired: number | null): void;
     get Name(): string;
+
+    HasExpired(): boolean;
 }
