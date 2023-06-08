@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { getRandom, getRandomName, guid } from "../utils/utils";
 import { BiGuanShi } from "./Buildings/BiGuanShi";
 import { CangJingGe } from "./Buildings/CangJingGe";
@@ -15,6 +15,7 @@ import { SectInfo } from "./SectInfo";
 import { SystemEngine } from "./SystemEngine";
 
 export class GlobalModel {
+    time: number;
     cangJingGe: CangJingGe;
     lianDanLu: LianDanLu;
     yaoYuan: YaoYuan;
@@ -27,6 +28,7 @@ export class GlobalModel {
 
     constructor(json: any) {
         json = json ?? {};
+        this.time = json.time ?? 0;
         this.sect = reactive(new SectInfo(json.sect));
 
         this.cangJingGe = new CangJingGe(json.cangJingGe);
@@ -107,6 +109,7 @@ export class GlobalModel {
         this.lingKuang.product();
         this.lianGongFang.product();
         this.yaoYuan.product();
+        this.time++;
     }
 
     revive(disciple: Disciple) {
@@ -130,5 +133,9 @@ export class GlobalModel {
 
     get IncomeOfLingShi(): number {
         return +(this.lingKuang.ValueOfProduction - this.biGuanShi.ValueOfConsumption - this.lianGongFang.ValueOfConsumption - this.yaoYuan.ValueOfConsumption).toFixed(0);
+    }
+
+    get Time() {
+        return ref<number | undefined>(this.time)
     }
 }

@@ -8,7 +8,7 @@ export class Buff implements IBuff {
     constructor(json: any) {
         json = json ?? {};
 
-        this.id = json.id;
+        this.id = json.id ?? 0;
         this.expired = json.expired ? new Date(json.expired) : null;
     }
 
@@ -18,6 +18,10 @@ export class Buff implements IBuff {
 
     static DaoXinPoSui(): Buff {
         return new Buff({ id: BuffItem.道心破碎, expired: new Date(new Date().getTime() + 10 * 60 * 1000) });
+    }
+
+    static Empty(): Buff {
+        return new Buff({ id: BuffItem.无事发生 });
     }
 
 
