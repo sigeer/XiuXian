@@ -8,8 +8,6 @@ import { BuildingBase } from "./BuildingBase";
 import { IGarrison } from "./IGarrison";
 
 export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
-    flag: number = SystemParameters.MedicinalMaterialsCycle;
-
     constructor(json: any) {
         json = json ?? {};
         super(json);
@@ -24,7 +22,7 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
         if (this.Disabled)
             return;
         if (this.consume()) {
-            if (this.flag === 0) {
+            if (SystemEngine.dateTime.value % SystemParameters.MedicinalMaterialsCycle === 0) {
                 const allResult = this.getYaoCaiLevelByLevel();
                 const productionArray = generateRandomArrayWithSum(this.ValueOfProduction, allResult.length);
                 const items = allResult.map((x, index) => new BagItem({ itemId: x, count: productionArray[index] }))
@@ -33,10 +31,7 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
                 })
                 const display = items.reduce((a, b) => `${a} ${b.Item.Name} ${b.count}个,`, "");
                 SystemEngine.log(`${this.name} 产出了 ${display}`);
-                this.flag = SystemParameters.MedicinalMaterialsCycle;
             }
-            else
-                this.flag--;
         }
     }
 

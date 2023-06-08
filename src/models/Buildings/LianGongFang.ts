@@ -2,7 +2,6 @@ import { IShouHuo } from "../IShouHuo";
 import { BuildingBase } from "./BuildingBase";
 
 export class LianGongFang extends BuildingBase implements IShouHuo {
-    flag: number = 1;
     constructor(json: any) {
         json = json ?? {};
         super(json);

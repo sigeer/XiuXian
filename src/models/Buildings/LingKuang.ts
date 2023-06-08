@@ -5,7 +5,6 @@ import { BuildingBase } from "./BuildingBase";
 import { IGarrison } from "./IGarrison";
 
 export class LingKuang extends BuildingBase implements IShouHuo, IGarrison {
-    flag: number = 1;
     constructor(json: any) {
         json = json ?? {};
         super(json);
