@@ -26,7 +26,7 @@ export class SystemEngine {
                 // DO
                 this.root.run();
 
-                if (this.dateTime.value % 9 === 0) {
+                if (this.dateTime.value % 60 === 0) {
                     const event = EventFactory.getEvent();
                     this.root.sect.addBuff(event.handle())
                 }

@@ -175,19 +175,19 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
         const tmp = +(this.exp * 0.2).toFixed(0);
         this.exp -= tmp;
         SystemEngine.log(`${this.name}损失${tmp}修为`);
-        this.setWeakness(0.1);
+        this.setWeakness(30);
     }
 
     fiasco() {
         this.tuPoSuccessRate = 0;
         this.exp = 0;
         SystemEngine.log(`${this.name}损失所有修为`);
-        this.setWeakness(0.1);
+        this.setWeakness(30);
     }
 
     revive() {
         this.dyingBefore = null;
-        this.setWeakness(0.1);
+        this.setWeakness(30);
         const lose = getRandom(0, 3);
         if (lose > 0) {
             SystemEngine.log(`${this.name}重铸肉身，下降${lose}级`);

@@ -10,7 +10,7 @@ export class GameEvent implements IGameEvent {
         let buff = Buff.Empty();
         const eventMap = EventMaps.find(x => x.id === this.id)
         if (eventMap)
-            buff = new Buff({ id: eventMap.buffId, duration: 5 })
+            buff = new Buff({ id: eventMap.buffId, duration: 20 })
         SystemEngine.log(`获得buff${buff.Name}`);
         return buff;
     }
