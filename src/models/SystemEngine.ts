@@ -1,6 +1,7 @@
 import { GlobalModel } from "./GlobalModel";
 import { ref } from 'vue';
 import { XinFaBase } from "./Settings/XinFaBase";
+import { EventFactory } from "./Events/EventFactory";
 
 export class SystemEngine {
     static speed: number = 5;
@@ -23,6 +24,11 @@ export class SystemEngine {
                 this.clearUnusedObject(this.root);
                 // DO
                 this.root.run();
+
+                if (this.root.time % 5 === 0) {
+                    const event = EventFactory.getEvent();
+                    this.root.sect.addBuff(event.handle())
+                }
 
                 this.store();
             } else {

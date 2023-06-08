@@ -4,13 +4,21 @@ export const BuffMap: { [key: number]: string } = {
     3: '闭关',
     4: '念头通达',
     5: '顿悟',
-    6: '道果淬炼'
+    6: '道果淬炼',
+    7: '灵矿干涸',
+    8: '发现新灵矿'
 }
 
 export enum BuffItem {
+    '无事发生' = 0,
     '道心破碎' = 1,
     '气血亏损' = 2,
-    '闭关' = 3
+    '闭关' = 3,
+    '念头通达' = 4,
+    '顿悟' = 5,
+    '道果淬炼' = 6,
+    '灵矿干涸' = 7,
+    '发现新灵矿' = 8,
 }
 
 export const BuffObject = [
@@ -43,10 +51,5 @@ export const BuffObject = [
         id: 6,
         name: '道果淬炼',
         description: '根骨+1'
-    },
-    {
-        id: 7,
-        name: '心魔缠身',
-        description: '突破失败的死亡率增加'
     }
 ]

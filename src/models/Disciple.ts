@@ -17,8 +17,9 @@ import { SystemEngine } from "./SystemEngine";
 import { BagItem } from "./Items/BagItem";
 import { IBuff } from "./IBuff";
 import { BuffItem } from "./Constants/BuffMap";
+import { IBuffOwner } from "./IBuffOwner";
 
-export class Disciple extends Person implements ILevel {
+export class Disciple extends Person implements ILevel, IBuffOwner {
     level: number;
     jinLingGen: ITalent;
     muLingGen: ITalent;

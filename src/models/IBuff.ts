@@ -4,4 +4,5 @@ export interface IBuff {
 
     extend(unit: number): void;
     setExpired(expired: Date | null): void;
+    get Name(): string;
 }

@@ -44,6 +44,12 @@ const showAlchemyModal = () => {
               v-model="SystemEngine.autoTuPo"
             />
           </div>
+          <div>第{{ pageModel.Time }}</div>
+          <template v-if="pageModel.sect.buffList.length > 0">
+            <div>BUff：</div>
+            <div v-for="x in pageModel.sect.buffList">{{ x.Name }} </div>
+          </template>
+
           <div>消息：</div>
           <div class="message-box">
             <div v-for="(msg, index) in msgList" :key="index">
@@ -154,7 +160,9 @@ const showAlchemyModal = () => {
                     >突破</a
                   >
                   <a
-                    v-if="p.CanLevelUp && pageModel.sect.hasItem(p.TuPoPotion.id)"
+                    v-if="
+                      p.CanLevelUp && pageModel.sect.hasItem(p.TuPoPotion.id)
+                    "
                     @click="
                       p.useMedicine(pageModel.sect.findItem(p.TuPoPotion.id)!)
                     "

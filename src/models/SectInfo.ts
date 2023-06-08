@@ -1,16 +1,22 @@
+import { Buff } from "./Buff";
+import { BuffItem } from "./Constants/BuffMap";
 import { Disciple } from "./Disciple";
+import { IBuff } from "./IBuff";
+import { IBuffOwner } from "./IBuffOwner";
 import { BagItem } from "./Items/BagItem";
 import { Item } from "./Items/Item";
 
-export class SectInfo {
+export class SectInfo implements IBuffOwner {
     items: BagItem[];
     discipleList: Disciple[];
+    buffList: IBuff[];
 
     constructor(json: any) {
         json = json ?? {};
 
         this.items = (json.items ?? []).map((x: any) => new BagItem(x));
         this.discipleList = (json.discipleList ?? []).map((x: any) => new Disciple(x));
+        this.buffList = (json.buffList ?? []).map((x: any) => new Buff(x));
     }
 
     addItem(item: BagItem) {
@@ -73,5 +79,38 @@ export class SectInfo {
             this.items.push(lingShi);
         }
         return lingShi;
+    }
+
+    hasBuff(buff: IBuff) {
+        return this.hasBuffById(buff.id);
+    }
+
+    hasBuffById(id: number) {
+        const buffData = this.buffList.find(x => x.id === id);
+        if (buffData && (buffData.expired === null || buffData.expired >= new Date())) {
+            return true;
+        }
+        if (buffData && buffData.expired! < new Date()) {
+            this.removeBuffById(id);
+        }
+        return false;
+    }
+
+    addBuff(buff: IBuff) {
+        const existedBuff = this.buffList.find(x => x.id === buff.id);
+        if (existedBuff) {
+            existedBuff.setExpired(buff.expired)
+
+        } else {
+            this.buffList.push(buff);
+        }
+    }
+
+    removeBuffById(buffId: number) {
+        this.buffList = this.buffList.filter(x => x.id !== buffId);
+    }
+
+    removeBuff(buff: IBuff) {
+        this.removeBuffById(buff.id);
     }
 }
