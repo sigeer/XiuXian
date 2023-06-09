@@ -73,7 +73,7 @@ export class SystemEngine {
             return null;
         }
         catch {
-            this.log("存档读取失败.");
+            alert("存档读取失败.");
             return null;
         }
     }
