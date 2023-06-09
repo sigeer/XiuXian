@@ -11,6 +11,7 @@ export class SystemEngine {
     static maxBuildingLevel: number = 99;
     static xinFaList: XinFaBase[];
     static root: GlobalModel;
+    static dateTime = ref<number>(0);
 
     static start(): GlobalModel {
         let model = this.load();
@@ -25,11 +26,12 @@ export class SystemEngine {
                 // DO
                 this.root.run();
 
-                if (this.root.time % 5 === 0) {
+                if (this.dateTime.value % 60 === 0) {
                     const event = EventFactory.getEvent();
                     this.root.sect.addBuff(event.handle())
                 }
 
+                this.dateTime.value++;
                 this.store();
             } else {
                 clearInterval(engine);
@@ -58,18 +60,20 @@ export class SystemEngine {
     static store(): void {
         const strValue = JSON.stringify(this.root);
         localStorage.setItem("c_a", strValue);
+        localStorage.setItem("c_a_time", this.dateTime.value.toString());
 
     }
 
     static load(): GlobalModel | null {
         try {
             const strValue = localStorage.getItem("c_a");
+            this.dateTime.value = +(localStorage.getItem("c_a_time") ?? 0);
             if (strValue)
                 return new GlobalModel(JSON.parse(strValue));
             return null;
         }
         catch {
-            this.log("存档读取失败.");
+            alert("存档读取失败.");
             return null;
         }
     }

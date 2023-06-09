@@ -7,10 +7,8 @@ import Panel from "./Panel.vue";
 import { GlobalModel } from "../models/GlobalModel";
 import { SystemEngine } from "../models/SystemEngine";
 import { BuildingBase } from "../models/Buildings/BuildingBase";
-import { formatTime } from "../utils/utils";
 
 const msgList = ref(SystemEngine.msgList);
-
 const showXinFaSelector = () => {
   // 选择
 };
@@ -44,10 +42,10 @@ const showAlchemyModal = () => {
               v-model="SystemEngine.autoTuPo"
             />
           </div>
-          <div>第{{ pageModel.Time }}</div>
-          <template v-if="pageModel.sect.buffList.length > 0">
+          <div>时间：{{ SystemEngine.dateTime }}</div>
+          <template v-if="pageModel.sect.BuffList.length > 0">
             <div>BUff：</div>
-            <div v-for="x in pageModel.sect.buffList">{{ x.Name }} </div>
+            <div v-for="x in pageModel.sect.BuffList">{{ x.Name }} </div>
           </template>
 
           <div>消息：</div>
@@ -108,7 +106,7 @@ const showAlchemyModal = () => {
               </template>
               <template #body>
                 <div
-                  :title="(p.IsWeakness || p.Soul) ? formatTime(p.IsWeakness ? p.weaknessBefore! : p.dyingBefore!) : ''"
+                  :title="(p.IsWeakness || p.Soul) ? (p.IsWeakness ? p.weaknessBefore! : p.dyingBefore!).toString() : ''"
                 >
                   状态：{{ p.StatusName }}
                   <a v-if="p.Soul" @click="pageModel.revive(p)"

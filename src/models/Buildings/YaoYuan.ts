@@ -76,7 +76,7 @@ export class YaoYuan extends BuildingBase implements IShouHuo, IGarrison {
         if (this.Disabled)
             return 0;
         const base = Math.round(SystemParameters.MedicinalMaterialsBaseProduction * +(1 + ((this.getDisciple()?.meiLi?.quality ?? 0) / 100)).toFixed(4));
-        return getRandom(SystemParameters.MedicinalMaterialsBaseProduction, base) + getRandom(0, this.level);
+        return getRandom(SystemParameters.MedicinalMaterialsBaseProduction, base) + getRandom(0, this.level * 3);
     }
 
     get ValueOfConsumption(): number {
