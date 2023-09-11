@@ -45,7 +45,7 @@ const showAlchemyModal = () => {
           <div>时间：{{ SystemEngine.dateTime }}</div>
           <template v-if="pageModel.sect.BuffList.length > 0">
             <div>BUff：</div>
-            <div v-for="x in pageModel.sect.BuffList">{{ x.Name }} </div>
+            <div v-for="x in pageModel.sect.BuffList">{{ x.Name }}</div>
           </template>
 
           <div>消息：</div>
