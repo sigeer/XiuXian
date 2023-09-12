@@ -2,6 +2,10 @@
 
 文字挂机游戏
 
+## 试玩
+
+<https://sigeer.github.io/XiuXian/>
+
 ## 系统
 
 ### 时间
