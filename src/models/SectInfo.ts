@@ -82,8 +82,12 @@ export class SectInfo implements IBuffOwner {
 
     get BuffList() : IBuff[] {
         const buffList = this.buffList.filter(x => !x.HasExpired());
+
+        //这里直接赋值给this.buffList会导致无限循环
+        if (buffList.length === this.buffList.length)
+            return this.buffList;
         this.buffList = buffList;
-        return buffList;
+        return this.buffList;
     }
 
     hasBuff(buff: IBuff) {

@@ -6,7 +6,7 @@ import { EventFactory } from "./Events/EventFactory";
 export class SystemEngine {
     static speed: number = 5;
     static time: number = 5;
-    static autoTuPo: boolean = true;
+    static autoTuPo = ref<boolean>(false);
     static msgList = ref<string[]>([]);
     static maxBuildingLevel: number = 99;
     static xinFaList: XinFaBase[];
