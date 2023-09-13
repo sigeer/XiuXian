@@ -128,7 +128,7 @@ export class Disciple extends Person implements ILevel, IBuffOwner {
             this.exp = +(this.exp + getValue).toFixed(0);
         }
         if (this.exp >= maxExp) {
-            if (SystemEngine.autoTuPo.value)
+            if (SystemEngine.autoTuPo)
                 this.levelUp();
             else {
                 let improve = 0.03;
