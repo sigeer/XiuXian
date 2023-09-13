@@ -6,7 +6,7 @@ import { EventFactory } from "./Events/EventFactory";
 export class SystemEngine {
     static speed: number = 5;
     static time: number = 5;
-    static autoTuPo = ref<boolean>(false);
+    static autoTuPo : boolean;
     static msgList = ref<string[]>([]);
     static maxBuildingLevel: number = 99;
     static xinFaList: XinFaBase[];
@@ -54,7 +54,9 @@ export class SystemEngine {
     }
 
     static log(str: string): void {
-        this.msgList.value.unshift(str)
+        if (this.msgList.value.length >= 30)
+            this.msgList.value.pop()
+        this.msgList.value.unshift(`[${this.dateTime.value}]: ${str}`)
     }
 
     static store(): void {
