@@ -7,7 +7,7 @@ export class SystemEngine {
     static speed: number = 5;
     static time: number = 5;
     static autoTuPo : boolean;
-    static msgList = ref<string[]>([]);
+    static msgList = [];
     static maxBuildingLevel: number = 99;
     static xinFaList: XinFaBase[];
     static root: GlobalModel;
@@ -54,9 +54,9 @@ export class SystemEngine {
     }
 
     static log(str: string): void {
-        if (this.msgList.value.length >= 30)
-            this.msgList.value.pop()
-        this.msgList.value.unshift(`[${this.dateTime.value}]: ${str}`)
+        if (this.msgList.length >= 30)
+            this.msgList.pop()
+        this.msgList.unshift(`[${this.dateTime.value}]: ${str}`)
     }
 
     static store(): void {

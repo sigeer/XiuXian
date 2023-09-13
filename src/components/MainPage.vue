@@ -8,7 +8,7 @@ import { GlobalModel } from "../models/GlobalModel";
 import { SystemEngine } from "../models/SystemEngine";
 import { BuildingBase } from "../models/Buildings/BuildingBase";
 
-const msgList = ref(SystemEngine.msgList);
+// const msgList = ref(SystemEngine.msgList);
 const showXinFaSelector = () => {
   // 选择
 };
@@ -57,7 +57,7 @@ const showAlchemyModal = () => {
           </template>
 
           <div class="message-box margin-top-12">
-            <div v-for="(msg, index) in msgList" :key="index">
+            <div v-for="(msg, index) in SystemEngine.msgList" :key="index">
               {{ msg }}
             </div>
           </div>
