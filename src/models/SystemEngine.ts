@@ -54,6 +54,8 @@ export class SystemEngine {
     }
 
     static log(str: string): void {
+        if (this.msgList.value.length >= 30)
+            this.msgList.value.pop()
         this.msgList.value.unshift(str)
     }
 
