@@ -42,14 +42,21 @@ const showAlchemyModal = () => {
               v-model="SystemEngine.autoTuPo"
             />
           </div>
+
           <div>时间：{{ SystemEngine.dateTime }}</div>
           <template v-if="pageModel.sect.BuffList.length > 0">
             <div>BUff：</div>
-            <div v-for="x in pageModel.sect.BuffList">{{ x.Name }}</div>
+            <div v-for="x in pageModel.sect.BuffList">
+              <el-tooltip class="box-item" effect="dark" placement="top">
+                <template #content>
+                  <small>过期时间：{{ x.expired }}</small>
+                </template>
+                {{ x.Name }}
+              </el-tooltip>
+            </div>
           </template>
 
-          <div>消息：</div>
-          <div class="message-box">
+          <div class="message-box margin-top-12">
             <div v-for="(msg, index) in msgList" :key="index">
               {{ msg }}
             </div>
@@ -89,7 +96,9 @@ const showAlchemyModal = () => {
       <Panel>
         <template #title
           >弟子({{ pageModel.sect.discipleList.length }}名)
-          <a class="btn-control" @click="pageModel.addNewDisciple()">收徒</a>
+          <a class="btn-control-small" @click="pageModel.addNewDisciple()"
+            >收徒</a
+          >
         </template>
         <template #body>
           <div style="display: block; overflow: hidden; white-space: nowrap">
@@ -152,7 +161,7 @@ const showAlchemyModal = () => {
                   </el-tooltip>
 
                   <a
-                    class="btn-control"
+                    class="btn-control-small"
                     v-if="p.CanLevelUp"
                     @click="p.levelUp()"
                     >突破</a
@@ -204,7 +213,9 @@ const showAlchemyModal = () => {
             }}</a>
             <div>
               等级{{ pageModel.cangJingGe.level }}
-              <a class="btn-control" @click="pageModel.cangJingGe.levelUp()"
+              <a
+                class="btn-control-small"
+                @click="pageModel.cangJingGe.levelUp()"
                 >升级（花费{{ pageModel.cangJingGe.getLevelUpCost() }}）</a
               >
             </div>
@@ -219,10 +230,16 @@ const showAlchemyModal = () => {
             }}</a>
             <div>
               等级{{ pageModel.lingKuang.level }}
-              <a class="btn-control" @click="pageModel.lingKuang.levelUp()"
+              <a
+                class="btn-control-small"
+                @click="pageModel.lingKuang.levelUp()"
                 >升级（花费{{ pageModel.lingKuang.getLevelUpCost() }}）</a
               >
-              （基础效果：+{{ pageModel.lingKuang.ValueOfProduction }}）
+              <small
+                >（基础效果：+{{
+                  pageModel.lingKuang.ValueOfProduction
+                }}）</small
+              >
             </div>
           </div>
           <hr />
@@ -235,7 +252,7 @@ const showAlchemyModal = () => {
             }}</a>
             <div>
               等级{{ pageModel.yaoYuan.level }}
-              <a class="btn-control" @click="pageModel.yaoYuan.levelUp()"
+              <a class="btn-control-small" @click="pageModel.yaoYuan.levelUp()"
                 >升级（花费{{ pageModel.yaoYuan.getLevelUpCost() }}）</a
               >
             </div>
@@ -245,7 +262,9 @@ const showAlchemyModal = () => {
             <a @click="showAlchemyModal">{{ pageModel.lianDanLu.name }}</a>
             <div>
               等级{{ pageModel.lianDanLu.level }}
-              <a class="btn-control" @click="pageModel.lianDanLu.levelUp()"
+              <a
+                class="btn-control-small"
+                @click="pageModel.lianDanLu.levelUp()"
                 >升级（花费{{ pageModel.lianDanLu.getLevelUpCost() }}）</a
               >
             </div>
@@ -260,7 +279,9 @@ const showAlchemyModal = () => {
             }}</a>
             <div>
               等级{{ pageModel.biGuanShi.level }}
-              <a class="btn-control" @click="pageModel.biGuanShi.levelUp()"
+              <a
+                class="btn-control-small"
+                @click="pageModel.biGuanShi.levelUp()"
                 >升级（花费{{ pageModel.biGuanShi.getLevelUpCost() }}）</a
               >
             </div>
@@ -273,7 +294,9 @@ const showAlchemyModal = () => {
             }}</a>
             <div>
               等级{{ pageModel.lianGongFang.level }}
-              <a class="btn-control" @click="pageModel.lianGongFang.levelUp()"
+              <a
+                class="btn-control-small"
+                @click="pageModel.lianGongFang.levelUp()"
                 >升级（花费{{ pageModel.lianGongFang.getLevelUpCost() }}）</a
               >
             </div>
@@ -283,7 +306,9 @@ const showAlchemyModal = () => {
             {{ pageModel.lianQiShi.name }}
             <div>
               等级{{ pageModel.lianQiShi.level }}
-              <a class="btn-control" @click="pageModel.lianQiShi.levelUp()"
+              <a
+                class="btn-control-small"
+                @click="pageModel.lianQiShi.levelUp()"
                 >升级（花费{{ pageModel.lianQiShi.getLevelUpCost() }}）</a
               >
             </div>
@@ -308,13 +333,15 @@ a {
   margin: 0px 6px;
 }
 
-.btn-control {
+.btn-control-small {
   cursor: pointer;
+  font-size: 0.75rem;
 }
 
 .message-box {
   max-height: 240px;
   overflow-y: auto;
+  text-align: left;
 }
 
 .text-left {

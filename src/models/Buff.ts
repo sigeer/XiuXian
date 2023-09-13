@@ -15,7 +15,11 @@ export class Buff implements IBuff {
         this.expired =  this.duration === null ? null : (this.duration + SystemEngine.dateTime.value);
     }
     HasExpired(): boolean {
-        return this.expired === null || this.expired < SystemEngine.dateTime.value
+        const d = this.expired === null || this.expired < SystemEngine.dateTime.value
+        if (d) {
+            SystemEngine.log(`Buff: 【${this.Name}】已过期`)
+        }
+        return d
     }
 
     static BiGuang(): Buff {
