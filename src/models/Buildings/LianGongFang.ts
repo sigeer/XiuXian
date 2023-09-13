@@ -5,7 +5,7 @@ export class LianGongFang extends BuildingBase implements IShouHuo {
     constructor(json: any) {
         json = json ?? {};
         super(json);
-        this.name = "练功房"
+        this.name = "聚灵阵"
     }
     consume(): boolean {
         if (this.Disabled)
