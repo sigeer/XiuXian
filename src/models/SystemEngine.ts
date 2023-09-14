@@ -8,7 +8,7 @@ export class SystemEngine {
     static speed: number = 5;
     static time: number = 5;
     static autoTuPo : boolean;
-    static msgList  = new FixedArray<String>(30, [], FixedArrayType.Dynamic);
+    static msgList  = ref(new FixedArray<String>(30, [], FixedArrayType.Dynamic));
     static maxBuildingLevel: number = 99;
     static xinFaList: XinFaBase[];
     static root: GlobalModel;
@@ -55,7 +55,7 @@ export class SystemEngine {
     }
 
     static log(str: string): void {
-        this.msgList.unshift(`[${this.dateTime.value}]: ${str}`)
+        this.msgList.value.unshift(`[${this.dateTime.value}]: ${str}`)
     }
 
     static store(): void {

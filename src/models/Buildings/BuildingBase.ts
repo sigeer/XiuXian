@@ -22,8 +22,12 @@ export class BuildingBase extends Build implements IBuild, ILevel {
         return this.level * (this.level - 1) * (this.level + 1) * 99;
     }
 
+    get CanLevelUp() {
+        return this.level < SystemEngine.maxBuildingLevel;
+    }
+
     levelUp(): boolean {
-        if (this.level >= SystemEngine.maxBuildingLevel)
+        if (!this.CanLevelUp)
             return false;
             
         if (this.sect!.LingShi.remove(this.getLevelUpCost())) {
