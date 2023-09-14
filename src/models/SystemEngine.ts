@@ -2,12 +2,13 @@ import { GlobalModel } from "./GlobalModel";
 import { ref } from 'vue';
 import { XinFaBase } from "./Settings/XinFaBase";
 import { EventFactory } from "./Events/EventFactory";
+import { FixedArray, FixedArrayType } from "./Others/FixedArray";
 
 export class SystemEngine {
     static speed: number = 5;
     static time: number = 5;
     static autoTuPo : boolean;
-    static msgList = ref<string[]>([]);
+    static msgList  = ref(new FixedArray<String>(30, [], FixedArrayType.Dynamic));
     static maxBuildingLevel: number = 99;
     static xinFaList: XinFaBase[];
     static root: GlobalModel;
@@ -54,8 +55,6 @@ export class SystemEngine {
     }
 
     static log(str: string): void {
-        if (this.msgList.value.length >= 30)
-            this.msgList.value.pop()
         this.msgList.value.unshift(`[${this.dateTime.value}]: ${str}`)
     }
 
